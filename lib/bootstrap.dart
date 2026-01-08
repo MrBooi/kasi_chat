@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 
+typedef AppBuilder = FutureOr<Widget> Function();
+
 class AppBlocObserver extends BlocObserver {
   const AppBlocObserver();
 
@@ -20,14 +22,24 @@ class AppBlocObserver extends BlocObserver {
   }
 }
 
-Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
+Future<void> bootstrap(AppBuilder builder) async {
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
   Bloc.observer = const AppBlocObserver();
 
-  // Add cross-flavor configuration here
+  await runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(await builder());
+      // Initialize any necessary services or configurations here
+      // For example, you might want to initialize a dependency injection container
+      // or set up logging.
+
+      // Call the builder to create the app widget
+      runApp(await builder());
+    },
+    (err, stack) {},
+  );
 }
