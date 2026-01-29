@@ -222,17 +222,27 @@ class AppTextField extends StatelessWidget {
          errorMaxLines: errorMaxLines,
        );
 
-  final String? hintText, labelText, errorText, initialValue;
+  final String? hintText;
+  final String? labelText;
+  final String? errorText;
+  final String? initialValue;
   final TextEditingController? textController;
   final VoidCallback? onTap;
   final FocusNode? focusNode;
   final void Function(String)? onChanged;
   final TextInputAction? textInputAction;
-  final bool obscureText, autoCorrect, enabled, autofocus, readOnly;
+  final bool obscureText;
+  final bool autoCorrect;
+  final bool enabled;
+  final bool autofocus;
+  final bool readOnly;
   final Widget? suffixIcon;
   final Icon? prefixIcon;
   final Widget? prefix;
-  final InputBorder? focusedBorder, enabledBorder, disabledBorder, border;
+  final InputBorder? focusedBorder;
+  final InputBorder? enabledBorder;
+  final InputBorder? disabledBorder;
+  final InputBorder? border;
   final TextInputType? textInputType;
   final List<TextInputFormatter>? inputFormatters;
   final String? Function(String?)? validator;

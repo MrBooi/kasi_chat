@@ -10,7 +10,7 @@ import 'package:kasi_chat/core/typography/typography.dart';
 /// The default app's [TextTheme] is [UITextStyle].
 ///
 /// Use `ContentThemeOverrideBuilder` to override the default [TextTheme]
-/// to [contentTextTheme].
+
 
 /// UI Text Style Definitions
 abstract class UITextStyle {
