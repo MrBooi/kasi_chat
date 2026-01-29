@@ -7,10 +7,10 @@ import 'package:kasi_chat/core/typography/typography.dart';
 /// e.g. news feed including articles and sections, while the UI text style
 /// is used for the rest of UI components.
 ///
-/// The default app's [TextTheme] is [AppTheme.uiTextTheme].
+/// The default app's [TextTheme] is [UITextStyle].
 ///
 /// Use `ContentThemeOverrideBuilder` to override the default [TextTheme]
-/// to [AppTheme.contentTextTheme].
+/// to [contentTextTheme].
 
 /// UI Text Style Definitions
 abstract class UITextStyle {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:kasi_chat/core/core.dart';
-import 'package:kasi_chat/core/extensions/extensions.dart';
 
 /// Provides values of current device screen `width` and `height` by provided
 /// context.
