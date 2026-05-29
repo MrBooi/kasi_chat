@@ -92,7 +92,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       final userId = client.auth.currentUser?.id ?? 'anonymous';
       final fileName =
           '${const Uuid().v4()}${path.extension(actualFile.path)}';
-      final String filePath = '$userId/$chatId/$fileName';
+      final filePath = '$userId/$chatId/$fileName';
       await client.storage.from(bucketName).upload(
             filePath,
             actualFile,
