@@ -1,5 +1,6 @@
 export 'colors/app_colors.dart';
 export 'constants/constants.dart';
+export 'data/database/database.dart';
 export 'extensions/extensions.dart';
 export 'spacing/app_spacing.dart';
 export 'theme/theme.dart';

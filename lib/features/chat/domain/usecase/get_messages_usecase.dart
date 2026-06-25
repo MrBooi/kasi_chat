@@ -9,5 +9,3 @@ class GetMessagesUseCase {
     return _repository.getMessages(chatId);
   }
 }
-
-

@@ -1,6 +1,8 @@
+import 'dart:async';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:kasi_chat/core/config/config.dart';
-import 'package:kasi_chat/core/data/database/app_database.dart';
+import 'package:kasi_chat/core/core.dart';
 import 'package:kasi_chat/core/data/datasources/remote_data_source.dart';
 import 'package:kasi_chat/core/domain/entities/entities.dart';
 import 'package:kasi_chat/features/chat/domain/repositories/chat_repository.dart';
@@ -14,9 +16,9 @@ class ChatRepositoryImpl implements ChatRepository {
   supabase_flutter.SupabaseClient get _client => _remoteDataSource.client;
   @override
   String get currentUserId => _client.auth.currentUser?.id ?? '';
-  
+
   final List<supabase_flutter.RealtimeChannel> _subscriptions = [];
-  
+
   @override
   Future<void> initialize() async {
     await syncUsers();
@@ -41,8 +43,10 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       final userId = currentUserId;
       if (userId.isEmpty) return;
-      final response =
-          await _client.from('chats').select().contains('user_ids', [userId]);
+      final response = await _client.from('chats').select().contains(
+        'user_ids',
+        [userId],
+      );
       for (final chatData in response) {
         await _db.upsertChat(chatData.toChat());
       }
@@ -75,40 +79,42 @@ class ChatRepositoryImpl implements ChatRepository {
     final userId = currentUserId;
     if (userId.isEmpty) return;
     final channel = _client.channel('db-changes')
-    ..onPostgresChanges(
-      event: supabase_flutter.PostgresChangeEvent.all,
-      schema: 'public',
-      table: 'chats',
-      filter: supabase_flutter.PostgresChangeFilter(
-        type: supabase_flutter.PostgresChangeFilterType.inFilter,
-        column: 'user_ids',
-        value: [userId],
-      ),
-      callback: (payload) async {
-        if (payload.eventType == supabase_flutter.PostgresChangeEvent.insert ||
-            payload.eventType == supabase_flutter.PostgresChangeEvent.update) {
-          final chatData = payload.newRecord;
-          await _db.upsertChat(chatData.toChat());
-        } else if (payload.eventType ==
-            supabase_flutter.PostgresChangeEvent.update) {
-          final chatId = payload.oldRecord['id'] as String;
-          await _db.deleteChat(chatId);
-        }
-      },
-    )
-    ..onPostgresChanges(
-      event: supabase_flutter.PostgresChangeEvent.insert,
-      schema: 'public',
-      table: 'messages',
-      callback: (payload) async {
-        final messageData = payload.newRecord;
-        final chatId = messageData['chat_id'] as String;
-        final chat = await _db.getChatById(chatId);
-        if (chat != null) {
-          await _db.upsertMessage(messageData.toMessage());
-        }
-      },
-    );
+      ..onPostgresChanges(
+        event: supabase_flutter.PostgresChangeEvent.all,
+        schema: 'public',
+        table: 'chats',
+        filter: supabase_flutter.PostgresChangeFilter(
+          type: supabase_flutter.PostgresChangeFilterType.inFilter,
+          column: 'user_ids',
+          value: [userId],
+        ),
+        callback: (payload) async {
+          if (payload.eventType ==
+                  supabase_flutter.PostgresChangeEvent.insert ||
+              payload.eventType ==
+                  supabase_flutter.PostgresChangeEvent.update) {
+            final chatData = payload.newRecord;
+            await _db.upsertChat(chatData.toChat());
+          } else if (payload.eventType ==
+              supabase_flutter.PostgresChangeEvent.update) {
+            final chatId = payload.oldRecord['id'] as String;
+            await _db.deleteChat(chatId);
+          }
+        },
+      )
+      ..onPostgresChanges(
+        event: supabase_flutter.PostgresChangeEvent.insert,
+        schema: 'public',
+        table: 'messages',
+        callback: (payload) async {
+          final messageData = payload.newRecord;
+          final chatId = messageData['chat_id'] as String;
+          final chat = await _db.getChatById(chatId);
+          if (chat != null) {
+            await _db.upsertMessage(messageData.toMessage());
+          }
+        },
+      );
     final subscription = channel.subscribe();
     _subscriptions.add(subscription);
   }
@@ -211,8 +217,11 @@ class ChatRepositoryImpl implements ChatRepository {
           .select('id')
           .single();
       final chatId = response['id'] as String;
-      final chatData =
-          await _client.from('chats').select().eq('id', chatId).single();
+      final chatData = await _client
+          .from('chats')
+          .select()
+          .eq('id', chatId)
+          .single();
       await _db.upsertChat(chatData.toChat());
       return chatId;
     } catch (e) {
@@ -253,9 +262,13 @@ class ChatRepositoryImpl implements ChatRepository {
           })
           .select()
           .single();
-          
-      final responseChat = await _client.from('chats').select().eq('id', chatId).single();
-      
+
+      final responseChat = await _client
+          .from('chats')
+          .select()
+          .eq('id', chatId)
+          .single();
+
       await _db.upsertMessage(responseMessage.toMessage());
       await _db.upsertChat(responseChat.toChat());
     } catch (e) {
@@ -265,7 +278,11 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
-  Future<String?> uploadFile(dynamic file, MessageType type, String chatId) async {
+  Future<String?> uploadFile(
+    dynamic file,
+    MessageType type,
+    String chatId,
+  ) async {
     if (file is! XFile) {
       throw ArgumentError('File must be an XFile');
     }
@@ -280,9 +297,11 @@ class ChatRepositoryImpl implements ChatRepository {
           .from('users')
           .select()
           .neq('id', currentId);
-      
-      final users = response.map<User>((userData) => userData.toUser()).toList();
-      
+
+      final users = response
+          .map<User>((userData) => userData.toUser())
+          .toList();
+
       for (final user in users) {
         await _db.upsertUser(user);
       }
@@ -301,12 +320,8 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   void dispose() {
     for (final subscription in _subscriptions) {
-      subscription.unsubscribe();
+      unawaited(subscription.unsubscribe());
     }
     _subscriptions.clear();
   }
-}
-
-extension on supabase_flutter.PostgrestMap {
-  Message toMessage() {}
 }

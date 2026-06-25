@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:kasi_chat/core/core.dart';
 import 'package:kasi_chat/core/data/datasources/remote_data_source.dart';
 import 'package:kasi_chat/core/domain/entities/user.dart';
 import 'package:kasi_chat/features/auth/domain/domain.dart';
@@ -78,6 +79,6 @@ class AuthRepositoryImpl implements AuthRepository {
         .select()
         .eq('id', user.id)
         .single();
-    return (response as Map<String, dynamic>).toUser();
+    return response.toUser();
   }
 }
