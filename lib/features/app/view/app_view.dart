@@ -15,7 +15,7 @@ class AppView extends StatelessWidget {
       routerConfig: routerConfig.router,
       title: 'Kasi Chat'.hardcoded,
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light, // TODOchange to system when dark mode is ready
+      themeMode: ThemeMode.light,
       theme: const AppTheme().theme,
       darkTheme: const AppDarkTheme().theme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
