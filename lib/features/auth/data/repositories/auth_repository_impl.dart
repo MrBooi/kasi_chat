@@ -1,25 +1,22 @@
 
 import 'dart:io';
-
-import 'package:kasi_chat/core/core.dart';
 import 'package:kasi_chat/core/data/datasources/remote_data_source.dart';
 import 'package:kasi_chat/core/domain/entities/user.dart';
 import 'package:kasi_chat/features/auth/domain/domain.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' as supabase_flutter;
 
 /// Concrete implementation of AuthRepository calling RemoteDataSource
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._remoteDataSource);
   final RemoteDataSource _remoteDataSource;
   @override
-  Future<supabase_flutter.User?> signIn({
+  Future<User?> signIn({
     required String email,
     required String password,
   }) {
     return _remoteDataSource.signIn(email: email, password: password);
   }
   @override
-  Future<supabase_flutter.User?> signUp({
+  Future<User?> signUp({
     required String email,
     required String password,
     required String username,
@@ -43,7 +40,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String username,
     File? avatarFile,
   }) async {
-    final user = _remoteDataSource.client.auth.currentUser;
+    final user = _remoteDataSource.currentUser;
     if (user == null) {
       throw Exception('User not authenticated');
     }
@@ -61,24 +58,19 @@ class AuthRepositoryImpl implements AuthRepository {
     );
   }
   @override
-  supabase_flutter.User? getCurrentUser() {
-    return _remoteDataSource.client.auth.currentUser;
+  User? getCurrentUser() {
+    return _remoteDataSource.currentUser;
   }
   @override
-  Stream<supabase_flutter.AuthState> get onAuthStateChange {
-    return _remoteDataSource.client.auth.onAuthStateChange;
+  Stream<User?> get onAuthStateChange {
+    return _remoteDataSource.onAuthStateChange;
   }
   @override
-  Future<User> getCurrentUserProfile() async {
+  Future<User> getCurrentUserProfile()  {
     final user = getCurrentUser();
     if (user == null) {
       throw Exception('Not authenticated');
     }
-    final response = await _remoteDataSource.client
-        .from('users')
-        .select()
-        .eq('id', user.id)
-        .single();
-    return response.toUser();
+    return _remoteDataSource.getCurrentUserProfile(user.id);
   }
 }
