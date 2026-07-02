@@ -8,14 +8,19 @@ import 'package:kasi_chat/core/domain/entities/entities.dart';
 import 'package:kasi_chat/features/chat/domain/repositories/chat_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase_flutter;
 
-/// Concrete implementation of ChatRepository coordinating Remote and Local data sources
+/// Concrete implementation of ChatRepository coordinating Remote
+///  and Local data sources
 class ChatRepositoryImpl implements ChatRepository {
-  ChatRepositoryImpl(this._remoteDataSource, this._db);
-  final RemoteDataSource _remoteDataSource;
-  final AppDatabase _db;
-  supabase_flutter.SupabaseClient get _client => _remoteDataSource.client;
+  ChatRepositoryImpl({
+    required this.client,
+    required this.db,
+    required this.remoteDataSource,
+  });
+  final RemoteDataSource remoteDataSource;
+  final supabase_flutter.SupabaseClient client;
+  final AppDatabase db;
   @override
-  String get currentUserId => _client.auth.currentUser?.id ?? '';
+  String get currentUserId => remoteDataSource.currentUser?.id ?? '';
 
   final List<supabase_flutter.RealtimeChannel> _subscriptions = [];
 
@@ -29,9 +34,9 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   Future<void> syncUsers() async {
     try {
-      final response = await _client.from('users').select();
+      final response = await client.from('users').select();
       for (final user in response) {
-        await _db.upsertUser(user.toUser());
+        await db.upsertUser(user.toUser());
       }
     } catch (e) {
       logE('Error syncing users: $e');
@@ -43,12 +48,12 @@ class ChatRepositoryImpl implements ChatRepository {
     try {
       final userId = currentUserId;
       if (userId.isEmpty) return;
-      final response = await _client.from('chats').select().contains(
+      final response = await client.from('chats').select().contains(
         'user_ids',
         [userId],
       );
       for (final chatData in response) {
-        await _db.upsertChat(chatData.toChat());
+        await db.upsertChat(chatData.toChat());
       }
       for (final chat in response) {
         await syncChatMessages(chat['id'] as String);
@@ -61,13 +66,13 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   Future<void> syncChatMessages(String chatId) async {
     try {
-      final response = await _client
+      final response = await client
           .from('messages')
           .select()
           .eq('chat_id', chatId)
           .order('created_at');
       for (final messageData in response) {
-        await _db.upsertMessage(messageData.toMessage());
+        await db.upsertMessage(messageData.toMessage());
       }
     } catch (e) {
       logE('Error syncing messages for chat $chatId: $e');
@@ -78,7 +83,7 @@ class ChatRepositoryImpl implements ChatRepository {
   void setupRealtimeSync() {
     final userId = currentUserId;
     if (userId.isEmpty) return;
-    final channel = _client.channel('db-changes')
+    final channel = client.channel('db-changes')
       ..onPostgresChanges(
         event: supabase_flutter.PostgresChangeEvent.all,
         schema: 'public',
@@ -94,11 +99,11 @@ class ChatRepositoryImpl implements ChatRepository {
               payload.eventType ==
                   supabase_flutter.PostgresChangeEvent.update) {
             final chatData = payload.newRecord;
-            await _db.upsertChat(chatData.toChat());
+            await db.upsertChat(chatData.toChat());
           } else if (payload.eventType ==
               supabase_flutter.PostgresChangeEvent.update) {
             final chatId = payload.oldRecord['id'] as String;
-            await _db.deleteChat(chatId);
+            await db.deleteChat(chatId);
           }
         },
       )
@@ -109,9 +114,9 @@ class ChatRepositoryImpl implements ChatRepository {
         callback: (payload) async {
           final messageData = payload.newRecord;
           final chatId = messageData['chat_id'] as String;
-          final chat = await _db.getChatById(chatId);
+          final chat = await db.getChatById(chatId);
           if (chat != null) {
-            await _db.upsertMessage(messageData.toMessage());
+            await db.upsertMessage(messageData.toMessage());
           }
         },
       );
@@ -122,7 +127,7 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   Future<List<Chat>> getChats() async {
     try {
-      return await _db.getAllChats();
+      return await db.getAllChats();
     } catch (e) {
       logE('Error getting chats: $e');
       return [];
@@ -132,7 +137,7 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   Future<List<Message>> getMessages(String chatId) async {
     try {
-      return await _db.getChatMessages(chatId);
+      return await db.getChatMessages(chatId);
     } catch (e) {
       logE('Error getting messages: $e');
       return [];
@@ -141,28 +146,28 @@ class ChatRepositoryImpl implements ChatRepository {
 
   @override
   Stream<List<Message>> watchMessages(String chatId) =>
-      _db.watchChatMessages(chatId);
+      db.watchChatMessages(chatId);
 
   @override
-  Stream<List<Chat>> watchChats() => _db.watchAllChats();
+  Stream<List<Chat>> watchChats() => db.watchAllChats();
   @override
-  Future<Chat?> getChatById(String chatId) async => _db.getChatById(chatId);
+  Future<Chat?> getChatById(String chatId) async => db.getChatById(chatId);
 
   @override
   Future<List<String>> getChatUserIds(String chatId) async {
-    final chat = await _db.getChatById(chatId);
+    final chat = await db.getChatById(chatId);
     return chat?.userIds ?? [];
   }
 
   @override
-  Future<User?> getUserById(String userId) async => _db.getUserById(userId);
+  Future<User?> getUserById(String userId) async => db.getUserById(userId);
 
   @override
   Future<List<User>> searchUsers(String query) async {
     try {
       final currentId = currentUserId;
       if (query.isEmpty) return [];
-      final response = await _client
+      final response = await client
           .from('users')
           .select()
           .neq('id', currentId)
@@ -180,7 +185,7 @@ class ChatRepositoryImpl implements ChatRepository {
           )
           .toList();
       for (final user in users) {
-        await _db.upsertUser(user);
+        await db.upsertUser(user);
       }
       return users;
     } catch (e) {
@@ -197,7 +202,7 @@ class ChatRepositoryImpl implements ChatRepository {
       userIds.add(userId);
     }
     if (userIds.length == 2) {
-      final existingChats = await _db.getAllChats();
+      final existingChats = await db.getAllChats();
       for (final chat in existingChats) {
         final chatUserIds = chat.userIds;
         if (chatUserIds.length == 2 &&
@@ -208,7 +213,7 @@ class ChatRepositoryImpl implements ChatRepository {
       }
     }
     try {
-      final response = await _client
+      final response = await client
           .from('chats')
           .insert({
             'user_ids': userIds,
@@ -217,12 +222,12 @@ class ChatRepositoryImpl implements ChatRepository {
           .select('id')
           .single();
       final chatId = response['id'] as String;
-      final chatData = await _client
+      final chatData = await client
           .from('chats')
           .select()
           .eq('id', chatId)
           .single();
-      await _db.upsertChat(chatData.toChat());
+      await db.upsertChat(chatData.toChat());
       return chatId;
     } catch (e) {
       logE('Error creating chat: $e');
@@ -233,8 +238,8 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   Future<void> deleteChat(String chatId) async {
     try {
-      await _client.from('chats').delete().eq('id', chatId);
-      await _db.deleteChat(chatId);
+      await client.from('chats').delete().eq('id', chatId);
+      await db.deleteChat(chatId);
     } catch (e) {
       logE('Error deleting chat: $e');
       throw Exception('Failed to delete chat: $e');
@@ -251,7 +256,7 @@ class ChatRepositoryImpl implements ChatRepository {
     final userId = currentUserId;
     if (userId.isEmpty) throw Exception('User not authenticated');
     try {
-      final responseMessage = await _client
+      final responseMessage = await client
           .from('messages')
           .insert({
             'chat_id': chatId,
@@ -263,14 +268,14 @@ class ChatRepositoryImpl implements ChatRepository {
           .select()
           .single();
 
-      final responseChat = await _client
+      final responseChat = await client
           .from('chats')
           .select()
           .eq('id', chatId)
           .single();
 
-      await _db.upsertMessage(responseMessage.toMessage());
-      await _db.upsertChat(responseChat.toChat());
+      await db.upsertMessage(responseMessage.toMessage());
+      await db.upsertChat(responseChat.toChat());
     } catch (e) {
       logE('Error sending message: $e');
       throw Exception('Failed to send message: $e');
@@ -286,14 +291,14 @@ class ChatRepositoryImpl implements ChatRepository {
     if (file is! XFile) {
       throw ArgumentError('File must be an XFile');
     }
-    return _remoteDataSource.uploadFile(file: file, type: type, chatId: chatId);
+    return remoteDataSource.uploadFile(file: file, type: type, chatId: chatId);
   }
 
   @override
   Future<List<User>> getUsers() async {
     try {
       final currentId = currentUserId;
-      final response = await _client
+      final response = await client
           .from('users')
           .select()
           .neq('id', currentId);
@@ -303,7 +308,7 @@ class ChatRepositoryImpl implements ChatRepository {
           .toList();
 
       for (final user in users) {
-        await _db.upsertUser(user);
+        await db.upsertUser(user);
       }
       return users;
     } catch (e) {
@@ -314,7 +319,7 @@ class ChatRepositoryImpl implements ChatRepository {
 
   @override
   Future<void> updateUserStatus({required bool isOnline}) async {
-    await _remoteDataSource.updateUserStatus(isOnline: isOnline);
+    await remoteDataSource.updateUserStatus(isOnline: isOnline);
   }
 
   @override
