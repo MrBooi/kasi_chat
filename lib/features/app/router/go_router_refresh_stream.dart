@@ -2,12 +2,11 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 class GoRouterAppBlocRefreshStream extends ChangeNotifier {
-  GoRouterAppBlocRefreshStream() {
-    // Listen to your Bloc's stream and call notifyListeners() on changes
-    // For example:
-    // myBloc.stream.listen((state) {
-    //   notifyListeners();
-    // });
+  GoRouterAppBlocRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen(
+      (dynamic _) => notifyListeners(),
+    );
   }
   late final StreamSubscription<dynamic> _subscription;
 

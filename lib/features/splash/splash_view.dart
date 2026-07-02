@@ -34,25 +34,25 @@ class SplashView extends StatelessWidget {
                 size: 60,
               ),
             ),
-            const SizedBox(height: 24),
+
+            const Gap.h(AppSpacing.xlg),
 
             // App name
             Text(
               'Kasi Messenger',
-              style: UITextStyle.headline3.copyWith(color: Colors.white),
+              style: UITextStyle.headline3.copyWith(color: AppColors.white),
             ),
-            const SizedBox(height: 16),
+            const Gap.h(AppSpacing.md),
 
             // Tagline
             Text(
               'Communicate without boundaries'.hardcoded,
               style: UITextStyle.caption.copyWith(color: Colors.white70),
             ),
-            const SizedBox(height: 48),
-
+            const Gap.h(AppSpacing.xxlg),
             // Loading indicator
             const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
             ),
           ],
         ),
