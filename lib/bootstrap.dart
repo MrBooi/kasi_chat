@@ -34,7 +34,8 @@ Future<void> bootstrap(AppBuilder builder) async {
       WidgetsFlutterBinding.ensureInitialized();
 
       // Initialize any necessary services or configurations here
-      // For example, you might want to initialize a dependency injection container
+      // For example, you might want to initialize
+      // a dependency injection container
       // or set up logging.
 
       // Call the builder to create the app widget
