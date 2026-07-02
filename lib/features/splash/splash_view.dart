@@ -8,55 +8,55 @@ class SplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      backgroundColor:AppColors.background,
+      backgroundColor: context.theme.scaffoldBackgroundColor,
       body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo
-              Container(
-                width: 120,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: AppColors.lightBlue,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icomoon.messageFill,
-                  color: Colors.white,
-                  size: 60,
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Logo
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: AppColors.lightBlue,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              const SizedBox(height: 24),
+              child: const Icon(
+                Icomoon.messageFill,
+                color: Colors.white,
+                size: 60,
+              ),
+            ),
+            const SizedBox(height: 24),
 
-              // App name
-              Text(
-                'Kasi Messenger',
-                style:UITextStyle.headline3.copyWith(color: Colors.white),
-              ),
-              const SizedBox(height: 16),
+            // App name
+            Text(
+              'Kasi Messenger',
+              style: UITextStyle.headline3.copyWith(color: Colors.white),
+            ),
+            const SizedBox(height: 16),
 
-              // Tagline
-              Text(
-                'Communicate without boundaries'.hardcoded,
-                style: UITextStyle.caption.copyWith(color: Colors.white70),
-              ),
-              const SizedBox(height: 48),
+            // Tagline
+            Text(
+              'Communicate without boundaries'.hardcoded,
+              style: UITextStyle.caption.copyWith(color: Colors.white70),
+            ),
+            const SizedBox(height: 48),
 
-              // Loading indicator
-              const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            ],
-          ),
+            // Loading indicator
+            const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          ],
         ),
+      ),
     );
   }
 }
