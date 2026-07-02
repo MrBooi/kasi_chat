@@ -2,9 +2,13 @@ import 'package:kasi_chat/core/domain/entities/entities.dart';
 
 abstract class AppDatabase {
  
+  // User-related methods
   Future<void> upsertUser(User user);
   Future<User?> getUserById(String userId);
   Future<List<User>> getAllUsers();
+  
+
+  
 
   Future<void> upsertChat(Chat chat);
   Future<Chat?> getChatById(String chatId);

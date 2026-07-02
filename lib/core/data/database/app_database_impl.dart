@@ -1,83 +1,227 @@
-import 'package:drift/drift.dart';
-import 'package:kasi_chat/core/data/database/database.dart';
-import 'package:kasi_chat/core/domain/entities/chat.dart';
-import 'package:kasi_chat/core/domain/entities/message.dart';
-import 'package:kasi_chat/core/domain/entities/user.dart';
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
+import 'package:kasi_chat/core/config/logger.dart';
+import 'package:kasi_chat/core/data/database/database.dart';
+import 'package:kasi_chat/core/domain/entities/entities.dart';
+
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide User;
+
+part 'app_database_impl.g.dart';
 
 @DriftDatabase(tables: [UsersTable, ChatsTable, MessagesTable])
-class AppDatabaseImpl implements AppDatabase {
-  AppDatabaseImpl() : super();
+class AppDatabaseImpl extends _$AppDatabaseImpl implements AppDatabase {
+  AppDatabaseImpl(this.client) : super(_openConnection(client));
+  final SupabaseClient client;
 
   @override
-  Future<void> close() {
-    // TODO: implement close
-    throw UnimplementedError();
+  int get schemaVersion => 1;
+
+  // User operations
+  @override
+  Future<void> upsertUser(User user) async {
+    await into(usersTable).insertOnConflictUpdate(
+      UsersTableCompanion.insert(
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        avatarUrl: Value(user.avatarUrl),
+        isOnline: Value(user.isOnline),
+      ),
+    );
   }
 
   @override
-  Future<void> deleteChat(String chatId) {
-    // TODO: implement deleteChat
-    throw UnimplementedError();
+  Future<User?> getUserById(String userId) async {
+    final result = await (select(
+      usersTable,
+    )..where((u) => u.id.equals(userId))).getSingleOrNull();
+    if (result == null) return null;
+
+    return User(
+      id: result.id,
+      email: result.email,
+      username: result.username,
+      avatarUrl: result.avatarUrl,
+      isOnline: result.isOnline,
+    );
   }
 
   @override
-  Future<List<Chat>> getAllChats() {
-    // TODO: implement getAllChats
-    throw UnimplementedError();
+  Future<List<User>> getAllUsers() async {
+    final results = await select(usersTable).get();
+
+    return results
+        .map(
+          (row) => User(
+            id: row.id,
+            email: row.email,
+            username: row.username,
+            avatarUrl: row.avatarUrl,
+            isOnline: row.isOnline,
+          ),
+        )
+        .toList();
+  }
+
+  // Chat operations
+  @override
+  Future<void> upsertChat(Chat chat) async {
+    await into(chatsTable).insertOnConflictUpdate(
+      ChatsTableCompanion.insert(
+        id: chat.id,
+        name: Value(chat.name),
+        createdAt: chat.createdAt,
+        updatedAt: chat.updatedAt,
+        userIds: jsonEncode(chat.userIds),
+        lastMessageText: Value(chat.lastMessageText),
+        lastMessageUserId: Value(chat.lastMessageUserId),
+        lastMessageType: Value(chat.lastMessageType),
+        lastMessageAt: Value(chat.lastMessageAt),
+      ),
+    );
   }
 
   @override
-  Future<List<User>> getAllUsers() {
-    // TODO: implement getAllUsers
-    throw UnimplementedError();
+  Future<Chat?> getChatById(String chatId) async {
+    final result = await (select(
+      chatsTable,
+    )..where((c) => c.id.equals(chatId))).getSingleOrNull();
+    if (result == null) return null;
+
+    return Chat(
+      id: result.id,
+      name: result.name,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
+      userIds: _parseUserIds(result.userIds),
+      lastMessageText: result.lastMessageText,
+      lastMessageUserId: result.lastMessageUserId,
+      lastMessageType: result.lastMessageType,
+      lastMessageAt: result.lastMessageAt,
+    );
   }
 
   @override
-  Future<Chat?> getChatById(String chatId) {
-    // TODO: implement getChatById
-    throw UnimplementedError();
+  Future<List<Chat>> getAllChats() async {
+    final results =
+        await (select(chatsTable)..orderBy([
+              (t) => OrderingTerm(
+                expression: t.lastMessageAt,
+                mode: OrderingMode.desc,
+                nulls: NullsOrder.last,
+              ),
+              (t) => OrderingTerm(
+                expression: t.createdAt,
+                mode: OrderingMode.desc,
+              ),
+            ]))
+            .get();
+
+    return results.map(_mapRowToChat).toList();
   }
 
   @override
-  Future<List<Message>> getChatMessages(String chatId) {
-    // TODO: implement getChatMessages
-    throw UnimplementedError();
+  Stream<List<Chat>> watchAllChats() =>
+      (select(chatsTable)..orderBy([
+            (t) => OrderingTerm(
+              expression: t.lastMessageAt,
+              mode: OrderingMode.desc,
+              nulls: NullsOrder.last,
+            ),
+            (t) => OrderingTerm(
+              expression: t.createdAt,
+              mode: OrderingMode.desc,
+            ),
+          ]))
+          .watch()
+          .distinct()
+          .map((rows) => rows.map(_mapRowToChat).toList());
+
+  @override
+  Future<void> deleteChat(String chatId) async {
+    // Delete messages first to maintain referential integrity
+    await (delete(messagesTable)..where((m) => m.chatId.equals(chatId))).go();
+    // Then delete the chat
+    await (delete(chatsTable)..where((c) => c.id.equals(chatId))).go();
+  }
+
+  // Message operations
+  @override
+  Future<void> upsertMessage(Message message) async {
+    await into(messagesTable).insertOnConflictUpdate(
+      MessagesTableCompanion.insert(
+        id: message.id,
+        chatId: message.chatId,
+        userId: Value(message.userId),
+        content: Value(message.content),
+        type: message.type,
+        fileUrl: Value(message.fileUrl),
+        createdAt: message.createdAt,
+      ),
+    );
   }
 
   @override
-  Future<User?> getUserById(String userId) {
-    // TODO: implement getUserById
-    throw UnimplementedError();
+  Future<List<Message>> getChatMessages(String chatId) async {
+    final results =
+        await (select(messagesTable)
+              ..where((m) => m.chatId.equals(chatId))
+              ..orderBy([(t) => OrderingTerm(expression: t.createdAt)]))
+            .get();
+
+    return results.map(_mapRowToMessage).toList();
   }
 
   @override
-  Future<void> upsertChat(Chat chat) {
-    // TODO: implement upsertChat
-    throw UnimplementedError();
-  }
+  Stream<List<Message>> watchChatMessages(String chatId) =>
+      (select(messagesTable)
+            ..where((m) => m.chatId.equals(chatId))
+            ..orderBy([(t) => OrderingTerm(expression: t.createdAt)]))
+          .watch()
+          .map((rows) => rows.map(_mapRowToMessage).toList());
 
-  @override
-  Future<void> upsertMessage(Message message) {
-    // TODO: implement upsertMessage
-    throw UnimplementedError();
-  }
+  // Helper methods
+  Chat _mapRowToChat(ChatsTableData row) => Chat(
+    id: row.id,
+    name: row.name,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+    userIds: _parseUserIds(row.userIds),
+    lastMessageText: row.lastMessageText,
+    lastMessageUserId: row.lastMessageUserId,
+    lastMessageType: row.lastMessageType,
+    lastMessageAt: row.lastMessageAt,
+  );
 
-  @override
-  Future<void> upsertUser(User user) {
-    // TODO: implement upsertUser
-    throw UnimplementedError();
-  }
+  Message _mapRowToMessage(MessagesTableData row) => Message(
+    id: row.id,
+    chatId: row.chatId,
+    userId: row.userId,
+    content: row.content,
+    type: row.type,
+    fileUrl: row.fileUrl,
+    createdAt: row.createdAt,
+  );
 
-  @override
-  Stream<List<Chat>> watchAllChats() {
-    // TODO: implement watchAllChats
-    throw UnimplementedError();
-  }
-
-  @override
-  Stream<List<Message>> watchChatMessages(String chatId) {
-    // TODO: implement watchChatMessages
-    throw UnimplementedError();
+  List<String> _parseUserIds(String userIdsJson) {
+    try {
+      final parsed = jsonDecode(userIdsJson) as List;
+      return parsed.cast<String>();
+    } catch (e) {
+      logE('Error parsing userIds JSON:',error: e);
+      return [];
+    }
   }
 }
+
+LazyDatabase _openConnection(SupabaseClient client) => LazyDatabase(() async {
+  final dbFolder = await getApplicationDocumentsDirectory();
+  final userId = client.auth.currentUser?.id ?? 'user';
+  final file = File(p.join(dbFolder.path, '$userId.sqlite'));
+  return NativeDatabase(file);
+});
