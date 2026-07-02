@@ -1,5 +1,6 @@
 
 import 'package:kasi_chat/core/domain/entities/entities.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase_flutter;
 
 extension UserExtension on Map<String, dynamic> {
   User toUser() => User(
@@ -9,6 +10,20 @@ extension UserExtension on Map<String, dynamic> {
         avatarUrl: this['avatar_url'] as String?,
         isOnline: this['is_online'] as bool? ?? false,
       );
+}
+
+extension SupabaseUserExtension on supabase_flutter.User? {
+  User? fromSupabaseUser() {
+    final user = this;
+    if (user == null) return null;
+
+    return User(
+      id: user.id,
+      email: user.email ?? '',
+      username: (user.userMetadata?['username'] as String?) ?? '',
+      avatarUrl: user.userMetadata?['avatar_url'] as String?,
+    );
+  }
 }
 
 extension UserToJsonExtension on User {
