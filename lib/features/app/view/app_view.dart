@@ -13,9 +13,9 @@ class AppView extends StatelessWidget {
     final routerConfig = AppRouter();
     return MaterialApp.router(
       routerConfig: routerConfig.router,
-      title: 'Kasi Chat'.hardcoded,
+      title: 'Kasi Messenger'.hardcoded,
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       theme: const AppTheme().theme,
       darkTheme: const AppDarkTheme().theme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
