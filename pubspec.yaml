@@ -56,3 +56,8 @@ dev_dependencies:
 flutter:
   generate: true
   uses-material-design: true
+
+  fonts:
+      - family: icomoon
+        fonts:
+          - asset: fonts/icomoon.ttf
