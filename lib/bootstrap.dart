@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
+import 'package:kasi_chat/core/di/di.dart';
 
 typedef AppBuilder = FutureOr<Widget> Function();
 
@@ -37,6 +38,8 @@ Future<void> bootstrap(AppBuilder builder) async {
       // For example, you might want to initialize
       // a dependency injection container
       // or set up logging.
+
+      await initDI();
 
       // Call the builder to create the app widget
       runApp(await builder());
