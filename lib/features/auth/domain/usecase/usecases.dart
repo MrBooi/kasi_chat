@@ -6,3 +6,4 @@ export 'sign_in_usecase.dart';
 export 'sign_out_usecase.dart';
 export 'sign_up_usecase.dart';
 export 'update_profile_usecase.dart';
+export 'user_state_change_usecase.dart';
