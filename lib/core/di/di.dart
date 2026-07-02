@@ -12,7 +12,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 final GetIt sl = GetIt.instance;
 
 Future<void> initDI() async {
-  sl.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
+  sl.registerFactory<SupabaseClient>(() => Supabase.instance.client);
 
   final database = AppDatabaseImpl(sl());
   sl..registerSingleton<AppDatabase>(database)

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:kasi_chat/core/di/di.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 typedef AppBuilder = FutureOr<Widget> Function();
 
@@ -38,6 +39,12 @@ Future<void> bootstrap(AppBuilder builder) async {
       // For example, you might want to initialize
       // a dependency injection container
       // or set up logging.
+
+      // 1. Initialize Supabase first
+      await Supabase.initialize(
+        url: 'YOUR_SUPABASE_URL',
+        anonKey: 'YOUR_SUPABASE_ANON_KEY',
+      );
 
       await initDI();
 
