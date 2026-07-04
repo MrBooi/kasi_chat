@@ -1,8 +1,8 @@
 
 import 'dart:io';
 import 'package:kasi_chat/core/data/datasources/remote_data_source.dart';
+import 'package:kasi_chat/core/domain/domain.dart';
 import 'package:kasi_chat/core/domain/entities/user.dart';
-import 'package:kasi_chat/core/domain/repositories/auth_repository.dart';
 
 /// Concrete implementation of AuthRepository calling RemoteDataSource
 class AuthRepositoryImpl implements AuthRepository {

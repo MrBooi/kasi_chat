@@ -24,7 +24,7 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.login.route,
-        builder: (context, state) => const LoginView(),
+        builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
         path: AppRoutes.register.route,

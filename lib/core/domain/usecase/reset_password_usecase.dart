@@ -1,4 +1,4 @@
-import 'package:kasi_chat/features/auth/domain/domain.dart';
+import 'package:kasi_chat/core/domain/domain.dart';
 
 class ResetPasswordUseCase {
   ResetPasswordUseCase(this._repository);

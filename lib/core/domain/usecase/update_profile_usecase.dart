@@ -1,6 +1,5 @@
 import 'dart:io';
-
-import 'package:kasi_chat/features/auth/domain/domain.dart';
+import 'package:kasi_chat/core/domain/domain.dart';
 
 class UpdateProfileUseCase {
   UpdateProfileUseCase(this._repository);
