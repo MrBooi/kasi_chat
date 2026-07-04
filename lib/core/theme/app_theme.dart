@@ -37,7 +37,6 @@ class AppTheme {
           contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
           border: OutlineInputBorder(borderSide: BorderSide.none),
         ),
-        scaffoldBackgroundColor: backgroundColor,
         appBarTheme: const AppBarTheme(
           elevation: 0,
           surfaceTintColor: AppColors.white,
@@ -152,7 +151,6 @@ class AppDarkTheme extends AppTheme {
           contentPadding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
           border: OutlineInputBorder(borderSide: BorderSide.none),
         ),
-        scaffoldBackgroundColor: backgroundColor,
         appBarTheme: const AppBarTheme(
           elevation: 0,
           backgroundColor: AppColors.black,
