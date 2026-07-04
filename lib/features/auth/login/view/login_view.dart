@@ -4,8 +4,17 @@ import 'package:kasi_chat/features/auth/login/widgets/widgets.dart';
 import 'package:kasi_chat/features/auth/widgets/widgets.dart';
 import 'package:kasi_chat/l10n/string_hardcoded.dart';
 
-class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const _LoginView();
+  }
+}
+
+class _LoginView extends StatelessWidget {
+  const _LoginView();
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +48,11 @@ class LoginView extends StatelessWidget {
                     ),
                   ),
                   Align(child: SignInButton()),
-                    Gap.v(AppSpacing.lg),
-                   Align(child: SignUpNewAccountButton()),
+                  Gap.v(AppSpacing.lg),
+                  Align(child: SignUpNewAccountButton()),
                 ],
               ),
             ),
-          
           ],
         ),
       ),
