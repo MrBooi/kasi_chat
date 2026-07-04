@@ -1,7 +1,7 @@
 export 'colors/app_colors.dart';
+export 'config/utilities/extensions/extensions.dart';
 export 'constants/constants.dart';
 export 'data/database/database.dart';
-export 'extensions/extensions.dart';
 export 'spacing/app_spacing.dart';
 export 'theme/theme.dart';
 export 'typography/typography.dart';
