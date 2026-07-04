@@ -22,7 +22,7 @@ class SplashView extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -35,21 +35,21 @@ class SplashView extends StatelessWidget {
               ),
             ),
 
-            const Gap.h(AppSpacing.xlg),
+            const Gap.v(AppSpacing.xxlg),
 
             // App name
             Text(
               'Kasi Messenger',
               style: UITextStyle.headline3.copyWith(color: AppColors.white),
             ),
-            const Gap.h(AppSpacing.md),
+            const Gap.v(AppSpacing.md),
 
             // Tagline
             Text(
               'Communicate without boundaries'.hardcoded,
               style: UITextStyle.caption.copyWith(color: Colors.white70),
             ),
-            const Gap.h(AppSpacing.xxlg),
+            const Gap.v(AppSpacing.xxlg),
             // Loading indicator
             const CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),

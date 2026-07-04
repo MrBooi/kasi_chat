@@ -5,6 +5,7 @@ import 'package:kasi_chat/core/di/di.dart';
 import 'package:kasi_chat/features/app/router/go_router_refresh_stream.dart';
 import 'package:kasi_chat/features/app/router/router.dart';
 import 'package:kasi_chat/features/auth/cubit/auth_cubit.dart';
+import 'package:kasi_chat/features/auth/login/view/login_view.dart';
 import 'package:kasi_chat/features/splash/splash.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -22,17 +23,8 @@ class AppRouter {
         builder: (context, state) => const SplashView(),
       ),
       GoRoute(
-        path: AppRoutes.authRoute.route,
-        name: AppRoutes.authRoute.name,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Auth Page')),
-        ),
-      ),
-      GoRoute(
         path: AppRoutes.login.route,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Login Page')),
-        ),
+        builder: (context, state) => const LoginView(),
       ),
       GoRoute(
         path: AppRoutes.register.route,
