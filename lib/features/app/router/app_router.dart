@@ -6,6 +6,7 @@ import 'package:kasi_chat/features/app/bloc/app_bloc.dart';
 import 'package:kasi_chat/features/app/router/go_router_refresh_stream.dart';
 import 'package:kasi_chat/features/app/router/router.dart';
 import 'package:kasi_chat/features/auth/login/view/login_view.dart';
+import 'package:kasi_chat/features/auth/sign_up/sign_up.dart';
 import 'package:kasi_chat/features/splash/splash.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -28,9 +29,7 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.register.route,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Register Page')),
-        ),
+        builder: (context, state) => const SignUpPage(),
       ),
       GoRoute(
         path: AppRoutes.profile.route,

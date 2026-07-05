@@ -1,6 +1,7 @@
-
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kasi_chat/core/core.dart';
+import 'package:kasi_chat/features/app/app.dart';
 import 'package:kasi_chat/l10n/string_hardcoded.dart';
 
 /// {@template sign_up_account_button}
@@ -13,7 +14,7 @@ class SignUpNewAccountButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tappable(
-      onTap: () {},
+      onTap: () => context.push(AppRoutes.register.route),
       child: Text.rich(
         overflow: TextOverflow.visible,
         style: context.bodyMedium,

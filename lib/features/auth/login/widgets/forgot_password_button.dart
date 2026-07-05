@@ -12,7 +12,7 @@ class ForgotPasswordButton extends StatelessWidget {
       throttle: true,
       throttleDuration: 650.ms,
       onTap: () {
-    
+  
       },
       child: Text(
         'Forgot Password?'.hardcoded,
