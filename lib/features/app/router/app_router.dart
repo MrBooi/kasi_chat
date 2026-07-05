@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kasi_chat/core/config/logger.dart';
 import 'package:kasi_chat/core/di/di.dart';
 import 'package:kasi_chat/features/app/bloc/app_bloc.dart';
 import 'package:kasi_chat/features/app/router/go_router_refresh_stream.dart';
 import 'package:kasi_chat/features/app/router/router.dart';
-import 'package:kasi_chat/features/auth/login/view/login_view.dart';
-import 'package:kasi_chat/features/auth/sign_up/sign_up.dart';
+import 'package:kasi_chat/features/auth/view/auth_view.dart';
 import 'package:kasi_chat/features/splash/splash.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -24,12 +22,9 @@ class AppRouter {
         builder: (context, state) => const SplashView(),
       ),
       GoRoute(
-        path: AppRoutes.login.route,
-        builder: (context, state) => const LoginPage(),
-      ),
-      GoRoute(
-        path: AppRoutes.register.route,
-        builder: (context, state) => const SignUpPage(),
+        path: AppRoutes.auth.route,
+        name: AppRoutes.auth.name,
+        builder: (context, state) => const AuthPage(),
       ),
       GoRoute(
         path: AppRoutes.profile.route,
@@ -66,15 +61,15 @@ class AppRouter {
     redirect: (context, state) {
       final authstate = sl<AppBloc>().state;
 
-      logI('Current auth state: $authstate');
-      final login = state.uri.path == AppRoutes.login.route;
-      final isLoggingIn = login || state.uri.path == AppRoutes.register.route;
+      final authenticated = authstate.status == AppStatus.authenticated;
+      final authenticating = state.matchedLocation == AppRoutes.auth.route;
+      final isInChatList = state.matchedLocation == AppRoutes.chatList.route;
 
-      return switch (authstate.status) {
-        AppStatus.unauthenticated when !isLoggingIn => AppRoutes.login.route,
-        AppStatus.authenticated when isLoggingIn => AppRoutes.chatList.route,
-        _ => null,
-      };
+      if (isInChatList && !authenticated) return AppRoutes.auth.route;
+      if (!authenticated) return AppRoutes.auth.route;
+      if (authenticating && authenticated) return AppRoutes.chatList.route;
+
+      return null;
     },
   );
 }

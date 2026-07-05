@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kasi_chat/core/core.dart';
-import 'package:kasi_chat/features/app/router/router.dart';
+import 'package:kasi_chat/features/auth/cubit/auth_cubit.dart';
 import 'package:kasi_chat/l10n/string_hardcoded.dart';
 
 /// {@template sign_in_into_account_button}
@@ -13,11 +13,9 @@ class SignInIntoAccountButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<AuthCubit>();
     return Tappable(
-      onTap: () {
-        context..pop()
-        ..pushReplacement(AppRoutes.login.name);
-      },
+      onTap: () => cubit.changeAuth(showLogin: true),
       child: RichText(
         maxLines: 1,
         overflow: TextOverflow.ellipsis,

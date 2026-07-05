@@ -12,8 +12,8 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<LoginCubit>(
-      create: (context) => sl<LoginCubit>(),
+    return BlocProvider<LoginCubit>.value(
+      value: sl<LoginCubit>(),
       child: const _LoginView(),
     );
   }
