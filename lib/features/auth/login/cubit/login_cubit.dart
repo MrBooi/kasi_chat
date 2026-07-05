@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:kasi_chat/core/config/config.dart';
 import 'package:kasi_chat/core/domain/usecase/usecases.dart';
 import 'package:kasi_chat/core/forms_fields/form_feilds.dart';
@@ -110,7 +111,7 @@ class LoginCubit extends Cubit<LoginState> {
     emit(initialState);
   }
 
-  Future<void> onSubmit() async {
+  Future<void> signInWithEmailAndPassword() async {
     final email = Email.dirty(state.email.value);
     final password = Password.dirty(state.password.value);
     final isFormValid = FormzValid([email, password]).isFormValid;
@@ -134,7 +135,7 @@ class LoginCubit extends Cubit<LoginState> {
       emit(newState);
     } catch (e) {
       final newState = state.copyWith(
-        status: LogInSubmissionStatus.googleLogInFailure,
+        status: LogInSubmissionStatus.emailOrPasswordFailure,
         message: e.toString(),
       );
       emit(newState);

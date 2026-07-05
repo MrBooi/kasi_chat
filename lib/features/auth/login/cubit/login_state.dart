@@ -46,7 +46,11 @@ enum LogInSubmissionStatus {
 
   /// [LogInSubmissionStatus.googleLogInFailure] indicates that some went
   /// wrong during google login process.
-  googleLogInFailure;
+  googleLogInFailure,
+
+  /// [LogInSubmissionStatus.emailOrPasswordFailure] indicates that some went
+  /// wrong during email or password validation process.
+  emailOrPasswordFailure;
 
   bool get isSuccess => this == LogInSubmissionStatus.success;
   bool get isLoading => this == LogInSubmissionStatus.loading;
@@ -69,7 +73,7 @@ enum LogInSubmissionStatus {
 /// [LoginState] holds all the information related to user login process.
 /// It is used to determine current state of user login process.
 /// {@endtemplate}
-class LoginState {
+class LoginState  extends Equatable {
   /// {@macro login_state}
   const LoginState._({
     required this.status,
@@ -110,6 +114,15 @@ class LoginState {
       password: password ?? this.password,
     );
   }
+  
+  @override
+  List<Object?> get props => [
+        status,
+        message,
+        showPassword,
+        email,
+        password,
+      ];
 }
 
 final loginSubmissionStatusMessage =
