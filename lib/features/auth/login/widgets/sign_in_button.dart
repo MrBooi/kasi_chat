@@ -19,7 +19,6 @@ class SignInButton extends StatelessWidget {
       (loginCubit) => loginCubit.state.status.isLoading,
     );
 
-    logI('SignInButton isLoading: $isLoading');
     final child = switch (isLoading) {
       true => AppButton.inProgress(style: style, scale: 0.5),
       _ => AppButton.auth(

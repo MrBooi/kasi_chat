@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kasi_chat/core/core.dart';
 import 'package:kasi_chat/core/di/di.dart';
 import 'package:kasi_chat/features/app/app.dart';
-import 'package:kasi_chat/features/auth/cubit/auth_cubit.dart';
+import 'package:kasi_chat/features/app/bloc/app_bloc.dart';
 import 'package:kasi_chat/l10n/gen/app_localizations.dart';
 import 'package:kasi_chat/l10n/string_hardcoded.dart';
 
@@ -13,8 +13,8 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routerConfig = AppRouter();
-    return BlocProvider<AuthCubit>(
-      create: (context) => sl<AuthCubit>(),
+    return BlocProvider<AppBloc>(
+      create: (context) => sl<AppBloc>(),
       child: MaterialApp.router(
         routerConfig: routerConfig.router,
         title: 'Kasi Messenger'.hardcoded,

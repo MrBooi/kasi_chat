@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kasi_chat/core/config/logger.dart';
 import 'package:kasi_chat/core/di/di.dart';
+import 'package:kasi_chat/features/app/bloc/app_bloc.dart';
 import 'package:kasi_chat/features/app/router/go_router_refresh_stream.dart';
 import 'package:kasi_chat/features/app/router/router.dart';
-import 'package:kasi_chat/features/auth/cubit/auth_cubit.dart';
 import 'package:kasi_chat/features/auth/login/view/login_view.dart';
 import 'package:kasi_chat/features/splash/splash.dart';
 
@@ -15,7 +15,7 @@ class AppRouter {
   GoRouter get router => GoRouter(
     navigatorKey: _rootNavigatorKey,
     initialLocation: AppRoutes.splash.route,
-    refreshListenable: GoRouterAppBlocRefreshStream(sl<AuthCubit>().stream),
+    refreshListenable: GoRouterAppBlocRefreshStream(sl<AppBloc>().stream),
     observers: [MyNavigatorObserver()],
     routes: [
       GoRoute(
@@ -65,26 +65,17 @@ class AppRouter {
       ),
     ],
     redirect: (context, state) {
-      final authstate = sl<AuthCubit>().state;
+      final authstate = sl<AppBloc>().state;
 
       logI('Current auth state: $authstate');
       final login = state.uri.path == AppRoutes.login.route;
       final isLoggingIn = login || state.uri.path == AppRoutes.register.route;
-      final isSplash = state.uri.path == AppRoutes.splash.route;
 
-      if (authstate is Initial) {
-        return isSplash ? null : AppRoutes.splash.route;
-      } else if (authstate is Authenticated) {
-        if (isLoggingIn || isSplash) {
-          return AppRoutes.chatList.route;
-        }
-      } else if (authstate is Unauthenticated) {
-        if (!isLoggingIn) {
-          return AppRoutes.login.route;
-        }
-      }
-
-      return null;
+      return switch (authstate.status) {
+        AppStatus.unauthenticated when !isLoggingIn => AppRoutes.login.route,
+        AppStatus.authenticated when isLoggingIn => AppRoutes.chatList.route,
+        _ => null,
+      };
     },
   );
 }
