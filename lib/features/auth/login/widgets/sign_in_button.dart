@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kasi_chat/core/config/logger.dart';
 import 'package:kasi_chat/core/core.dart';
+import 'package:kasi_chat/features/auth/login/cubit/login_cubit.dart';
 import 'package:kasi_chat/l10n/string_hardcoded.dart';
 
 class SignInButton extends StatelessWidget {
@@ -12,12 +15,16 @@ class SignInButton extends StatelessWidget {
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       ),
     );
-    const isLoading = false; // Replace with actual state management logic
+    final isLoading = context.select<LoginCubit, bool>(
+      (loginCubit) => loginCubit.state.status.isLoading,
+    );
+
+    logI('SignInButton isLoading: $isLoading');
     final child = switch (isLoading) {
       true => AppButton.inProgress(style: style, scale: 0.5),
       _ => AppButton.auth(
         'Sign In'.hardcoded,
-        () {},
+        () => context.read<LoginCubit>().signInWithEmailAndPassword(),
         style: style,
         outlined: true,
       ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kasi_chat/core/config/config.dart';
 import 'package:kasi_chat/core/core.dart';
+import 'package:kasi_chat/features/auth/login/cubit/login_cubit.dart';
 import 'package:kasi_chat/l10n/string_hardcoded.dart';
 
 class PasswordTextField extends StatefulWidget {
@@ -19,8 +21,10 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
   @override
   void initState() {
     super.initState();
+    final cubit = context.read<LoginCubit>()..resetState();
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
+        cubit.onPasswordUnfocused();
       }
     });
   }
@@ -33,8 +37,15 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
 
   @override
   Widget build(BuildContext context) {
-     const bool isLoading = false; // Replace with actual state management logic
-    bool showPassword = false; // Replace with actual state management logic
+    final isLoading = context.select<LoginCubit, bool>(
+      (loginCubit) => loginCubit.state.status.isLoading,
+    );
+    final passwordError = context.select<LoginCubit, String?>(
+      (loginCubit) => loginCubit.state.password.errorMessage,
+    );
+    final showPassword = context.select<LoginCubit, bool>(
+      (loginCubit) => loginCubit.state.showPassword,
+    );
     return AppTextField(
       key: const ValueKey('loginPasswordTextField'),
       filled: true,
@@ -45,14 +56,13 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       textInputType: TextInputType.visiblePassword,
       autofillHints: const [AutofillHints.password],
       textInputAction: TextInputAction.done,
-      onFieldSubmitted: (_) {},
-      onChanged: (v) => _debouncer.run(
-        () {}
-      ),
-      errorText: 'Please enter your password'.hardcoded,
+      onFieldSubmitted: (_) =>
+          context.read<LoginCubit>().signInWithEmailAndPassword(),
+      onChanged: (v) =>
+          _debouncer.run(() => context.read<LoginCubit>().onPasswordChanged(v)),
+      errorText: passwordError,
       suffixIcon: Tappable(
-        backgroundColor: AppColors.transparent,
-        onTap: (){},
+        onTap: context.read<LoginCubit>().changePasswordVisibility,
         child: Icon(
           !showPassword ? Icons.visibility : Icons.visibility_off,
           color: context.customAdaptiveColor(light: AppColors.grey),

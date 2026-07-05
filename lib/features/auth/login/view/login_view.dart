@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kasi_chat/core/core.dart';
+import 'package:kasi_chat/core/di/di.dart';
+import 'package:kasi_chat/features/auth/login/cubit/login_cubit.dart';
 import 'package:kasi_chat/features/auth/login/widgets/widgets.dart';
 import 'package:kasi_chat/features/auth/widgets/widgets.dart';
 import 'package:kasi_chat/l10n/string_hardcoded.dart';
@@ -9,7 +12,10 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _LoginView();
+    return BlocProvider<LoginCubit>(
+      create: (context) => sl<LoginCubit>(),
+      child: const _LoginView(),
+    );
   }
 }
 

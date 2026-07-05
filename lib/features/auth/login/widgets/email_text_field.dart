@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kasi_chat/core/config/config.dart';
 import 'package:kasi_chat/core/widgets/app_text_field.dart';
+import 'package:kasi_chat/features/auth/login/cubit/login_cubit.dart';
 import 'package:kasi_chat/l10n/string_hardcoded.dart';
 
 class EmailTextField extends StatefulWidget {
@@ -19,8 +21,11 @@ class _EmailTextFieldState extends State<EmailTextField> {
   @override
   void initState() {
     super.initState();
+    final cubit = context.read<LoginCubit>()..resetState();
     _focusNode.addListener(() {
-      if (!_focusNode.hasFocus) {}
+      if (!_focusNode.hasFocus) {
+        cubit.onEmailUnfocused();
+      }
     });
   }
 
@@ -32,7 +37,12 @@ class _EmailTextFieldState extends State<EmailTextField> {
 
   @override
   Widget build(BuildContext context) {
-    const bool isLoading = false; // Replace with actual state management logic
+    final isLoading = context.select<LoginCubit, bool>(
+      (loginCubit) => loginCubit.state.status.isLoading,
+    );
+    final emailError = context.select<LoginCubit, String?>(
+      (loginCubit) => loginCubit.state.email.errorMessage,
+    );
     return AppTextField(
       key: const ValueKey('loginEmailTextField'),
       filled: true,
@@ -43,9 +53,9 @@ class _EmailTextFieldState extends State<EmailTextField> {
       textInputType: TextInputType.emailAddress,
       autofillHints: const [AutofillHints.email],
       onChanged: (v) => _debouncer.run(
-        () {},
+        () => context.read<LoginCubit>().onEmailChanged(v),
       ),
-      errorText: 'Please enter a valid email address'.hardcoded,
+      errorText: emailError,
     );
   }
 }
