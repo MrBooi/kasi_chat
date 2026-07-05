@@ -5,7 +5,7 @@ class UserChangeUsecase {
   UserChangeUsecase(this._repository);
   final AuthRepository _repository;
 
-  Stream<User?> call() {
+  Stream<User> call() {
     return _repository.onAuthStateChange;
   }
 }

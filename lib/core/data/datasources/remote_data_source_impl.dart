@@ -138,11 +138,14 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   User? get currentUser => client.auth.currentUser.fromSupabaseUser();
 
   @override
-  Stream<User?> get onAuthStateChange => client.auth.onAuthStateChange.map((
+  Stream<User> get onAuthStateChange => client.auth.onAuthStateChange.map((
     event,
   ) {
     final supabaseUser = event.session?.user;
-    return supabaseUser.fromSupabaseUser();
+     if(supabaseUser == null){
+      return User.anonymous;
+     }
+    return supabaseUser.fromSupabaseUser()!;
   });
   
   @override

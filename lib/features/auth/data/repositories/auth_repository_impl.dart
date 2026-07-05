@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:kasi_chat/core/data/datasources/remote_data_source.dart';
 import 'package:kasi_chat/core/domain/entities/user.dart';
@@ -15,6 +14,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }) {
     return _remoteDataSource.signIn(email: email, password: password);
   }
+
   @override
   Future<User?> signUp({
     required String email,
@@ -27,14 +27,17 @@ class AuthRepositoryImpl implements AuthRepository {
       username: username,
     );
   }
+
   @override
   Future<void> signOut() {
     return _remoteDataSource.signOut();
   }
+
   @override
   Future<void> resetPassword(String email) {
     return _remoteDataSource.resetPassword(email);
   }
+
   @override
   Future<void> updateProfile({
     required String username,
@@ -57,16 +60,19 @@ class AuthRepositoryImpl implements AuthRepository {
       avatarUrl: avatarUrl,
     );
   }
+
   @override
   User? getCurrentUser() {
     return _remoteDataSource.currentUser;
   }
+
   @override
-  Stream<User?> get onAuthStateChange {
+  Stream<User> get onAuthStateChange {
     return _remoteDataSource.onAuthStateChange;
   }
+
   @override
-  Future<User> getCurrentUserProfile()  {
+  Future<User> getCurrentUserProfile() {
     final user = getCurrentUser();
     if (user == null) {
       throw Exception('Not authenticated');

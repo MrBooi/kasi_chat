@@ -5,7 +5,7 @@ import 'package:kasi_chat/core/domain/entities/entities.dart';
 
 /// Data source interface for remote operations (Supabase)
 abstract class RemoteDataSource {
-  Stream<User?> get onAuthStateChange;
+  Stream<User> get onAuthStateChange;
 
   User? get currentUser;
 
