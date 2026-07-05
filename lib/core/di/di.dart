@@ -5,6 +5,7 @@ import 'package:kasi_chat/core/data/datasources/remote_data_source_impl.dart';
 import 'package:kasi_chat/core/domain/domain.dart';
 import 'package:kasi_chat/features/auth/cubit/auth_cubit.dart';
 import 'package:kasi_chat/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:kasi_chat/features/auth/login/cubit/login_cubit.dart';
 import 'package:kasi_chat/features/chat/data/repositories/chat_repository_impl.dart';
 import 'package:kasi_chat/features/chat/domain/repositories/chat_repository.dart';
 import 'package:kasi_chat/features/chat/domain/usecase/domain.dart';
@@ -50,13 +51,17 @@ Future<void> initDI() async {
     ..registerLazySingleton(() => UpdateUserStatusUseCase(sl()))
     ..registerLazySingleton(() => UploadFileUseCase(sl()))
     ..registerLazySingleton(() => GetUsersUseCase(sl()))
-
     // Register dependencies here
     // Register blocs or Cubits
     ..registerLazySingleton<AuthCubit>(
       () => AuthCubit(
         userChangeUsecase: sl(),
         getCurrentUserUseCase: sl(),
+      ),
+    )
+    ..registerLazySingleton<LoginCubit>(
+      () => LoginCubit(
+        signInUseCase: sl(),
       ),
     );
 }
