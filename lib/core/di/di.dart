@@ -5,6 +5,7 @@ import 'package:kasi_chat/core/data/datasources/remote_data_source_impl.dart';
 import 'package:kasi_chat/core/data/repositories/auth_repository_impl.dart';
 import 'package:kasi_chat/core/domain/domain.dart';
 import 'package:kasi_chat/features/app/bloc/app_bloc.dart';
+import 'package:kasi_chat/features/auth/forgot_password/cubit/forgot_password_cubit.dart';
 import 'package:kasi_chat/features/auth/login/cubit/login_cubit.dart';
 import 'package:kasi_chat/features/auth/sign_up/cubit/sign_up_cubit.dart';
 import 'package:kasi_chat/features/chat/data/repositories/chat_repository_impl.dart';
@@ -67,5 +68,8 @@ Future<void> initDI() async {
     )
     ..registerLazySingleton<SignUpCubit>(
       () => SignUpCubit(signUpUseCase: sl()),
+    )
+    ..registerLazySingleton<ForgotPasswordCubit>(
+      () => ForgotPasswordCubit(resetPasswordUseCase: sl()),
     );
 }
