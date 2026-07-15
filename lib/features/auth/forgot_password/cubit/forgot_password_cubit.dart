@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:kasi_chat/core/config/submission_status_message.dart';
 import 'package:kasi_chat/core/core.dart';
 import 'package:kasi_chat/core/domain/domain.dart';
