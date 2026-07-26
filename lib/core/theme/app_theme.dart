@@ -22,7 +22,8 @@ class AppTheme {
   Color get primary => AppColors.black;
 
   /// Defines light [ThemeData].
-  ThemeData get theme => FlexThemeData.light(
+  ThemeData get theme =>
+      FlexThemeData.light(
         scheme: FlexScheme.custom,
         colors: FlexSchemeColor.from(
           brightness: brightness,
@@ -55,56 +56,70 @@ class AppTheme {
   /// Defines iOS dart SystemUiOverlayStyle.
   static const SystemUiOverlayStyle iOSDarkSystemBarTheme =
       SystemUiOverlayStyle(
-    statusBarBrightness: Brightness.light,
-    statusBarColor: AppColors.transparent,
-    statusBarIconBrightness: Brightness.light,
-    systemNavigationBarIconBrightness: Brightness.light,
-  );
+        statusBarBrightness: Brightness.light,
+        statusBarColor: AppColors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarIconBrightness: Brightness.light,
+      );
 
   /// Text theme of the App theme.
   TextTheme get textTheme => contentTextTheme;
 
   /// The Content text theme based on [ContentTextStyle].
-  static final TextTheme contentTextTheme = TextTheme(
-    displayLarge: ContentTextStyle.headline1,
-    displayMedium: ContentTextStyle.headline2,
-    displaySmall: ContentTextStyle.headline3,
-    headlineLarge: ContentTextStyle.headline4,
-    headlineMedium: ContentTextStyle.headline5,
-    headlineSmall: ContentTextStyle.headline6,
-    titleLarge: ContentTextStyle.headline7,
-    titleMedium: ContentTextStyle.subtitle1,
-    titleSmall: ContentTextStyle.subtitle2,
-    bodyLarge: ContentTextStyle.bodyText1,
-    bodyMedium: ContentTextStyle.bodyText2,
-    labelLarge: ContentTextStyle.button,
-    bodySmall: ContentTextStyle.caption,
-    labelSmall: ContentTextStyle.overline,
-  ).apply(
-    bodyColor: AppColors.black,
-    displayColor: AppColors.black,
-    decorationColor: AppColors.black,
-  );
+  static final TextTheme contentTextTheme =
+      TextTheme(
+        displayLarge: ContentTextStyle.headline1,
+        displayMedium: ContentTextStyle.headline2,
+        displaySmall: ContentTextStyle.headline3,
+        headlineLarge: ContentTextStyle.headline4,
+        headlineMedium: ContentTextStyle.headline5,
+        headlineSmall: ContentTextStyle.headline6,
+        titleLarge: ContentTextStyle.headline7,
+        titleMedium: ContentTextStyle.subtitle1,
+        titleSmall: ContentTextStyle.subtitle2,
+        bodyLarge: ContentTextStyle.bodyText1,
+        bodyMedium: ContentTextStyle.bodyText2,
+        labelLarge: ContentTextStyle.button,
+        bodySmall: ContentTextStyle.caption,
+        labelSmall: ContentTextStyle.overline,
+      ).apply(
+        bodyColor: AppColors.black,
+        displayColor: AppColors.black,
+        decorationColor: AppColors.black,
+      );
 
   /// The UI text theme based on [UITextStyle].
-  static final TextTheme uiTextTheme = TextTheme(
-    displayLarge: UITextStyle.headline1,
-    displayMedium: UITextStyle.headline2,
-    displaySmall: UITextStyle.headline3,
-    headlineMedium: UITextStyle.headline4,
-    headlineSmall: UITextStyle.headline5,
-    titleLarge: UITextStyle.headline6,
-    titleMedium: UITextStyle.subtitle1,
-    titleSmall: UITextStyle.subtitle2,
-    bodyLarge: UITextStyle.bodyText1,
-    bodyMedium: UITextStyle.bodyText2,
-    labelLarge: UITextStyle.button,
-    bodySmall: UITextStyle.caption,
-    labelSmall: UITextStyle.overline,
-  ).apply(
-    bodyColor: AppColors.black,
-    displayColor: AppColors.black,
-    decorationColor: AppColors.black,
+  static final TextTheme uiTextTheme =
+      TextTheme(
+        displayLarge: UITextStyle.headline1,
+        displayMedium: UITextStyle.headline2,
+        displaySmall: UITextStyle.headline3,
+        headlineMedium: UITextStyle.headline4,
+        headlineSmall: UITextStyle.headline5,
+        titleLarge: UITextStyle.headline6,
+        titleMedium: UITextStyle.subtitle1,
+        titleSmall: UITextStyle.subtitle2,
+        bodyLarge: UITextStyle.bodyText1,
+        bodyMedium: UITextStyle.bodyText2,
+        labelLarge: UITextStyle.button,
+        bodySmall: UITextStyle.caption,
+        labelSmall: UITextStyle.overline,
+      ).apply(
+        bodyColor: AppColors.black,
+        displayColor: AppColors.black,
+        decorationColor: AppColors.black,
+      );
+
+  // Avatar theme
+  AvatarThemeData get avatarTheme => const AvatarThemeData(
+    defaultBackgroundColors: [
+      AppColors.avatarBackground1,
+      AppColors.avatarBackground2,
+      AppColors.avatarBackground3,
+    ],
+    textColor: AppColors.avatarText,
+    size: 48,
+    fontSize: 20,
   );
 }
 
@@ -134,7 +149,8 @@ class AppDarkTheme extends AppTheme {
   }
 
   @override
-  ThemeData get theme => FlexThemeData.dark(
+  ThemeData get theme =>
+      FlexThemeData.dark(
         scheme: FlexScheme.custom,
         darkIsTrueBlack: true,
         colors: FlexSchemeColor.from(
@@ -167,6 +183,18 @@ class AppDarkTheme extends AppTheme {
       );
 }
 
+// Avatar theme
+AvatarThemeData get avatarTheme => const AvatarThemeData(
+  defaultBackgroundColors: [
+    AppColors.avatarBackground1,
+    AppColors.avatarBackground2,
+    AppColors.avatarBackground3,
+  ],
+  textColor: AppColors.avatarText,
+  size: 48,
+  fontSize: 20,
+);
+
 /// Theme for the [SystemUiOverlayStyle]
 class SystemUiOverlayTheme {
   /// {@macro system_ui_overlay_theme}
@@ -175,43 +203,59 @@ class SystemUiOverlayTheme {
   /// Defines iOS light SystemUiOverlayStyle.
   static const SystemUiOverlayStyle iOSLightSystemBarTheme =
       SystemUiOverlayStyle(
-    statusBarBrightness: Brightness.dark,
-    statusBarColor: AppColors.transparent,
-    statusBarIconBrightness: Brightness.light,
-    systemNavigationBarIconBrightness: Brightness.dark,
-  );
+        statusBarBrightness: Brightness.dark,
+        statusBarColor: AppColors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      );
 
   /// Defines iOS dark SystemUiOverlayStyle.
   static const SystemUiOverlayStyle iOSDarkSystemBarTheme =
       SystemUiOverlayStyle(
-    statusBarBrightness: Brightness.light,
-    statusBarColor: AppColors.transparent,
-    statusBarIconBrightness: Brightness.light,
-    systemNavigationBarIconBrightness: Brightness.light,
-  );
+        statusBarBrightness: Brightness.light,
+        statusBarColor: AppColors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarIconBrightness: Brightness.light,
+      );
 
   /// Defines Android light SystemUiOverlayStyle.
   static const SystemUiOverlayStyle androidLightSystemBarTheme =
       SystemUiOverlayStyle(
-    statusBarBrightness: Brightness.light,
-    statusBarColor: AppColors.white,
-    statusBarIconBrightness: Brightness.dark,
-    systemNavigationBarIconBrightness: Brightness.dark,
-  );
+        statusBarBrightness: Brightness.light,
+        statusBarColor: AppColors.white,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      );
 
   /// Defines light SystemUiOverlayStyle.
   static const SystemUiOverlayStyle androidDarkSystemBarTheme =
       SystemUiOverlayStyle(
-    statusBarBrightness: Brightness.dark,
-    statusBarColor: AppColors.black,
-    statusBarIconBrightness: Brightness.light,
-    systemNavigationBarIconBrightness: Brightness.light,
-  );
+        statusBarBrightness: Brightness.dark,
+        statusBarColor: AppColors.black,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarIconBrightness: Brightness.light,
+      );
 
   /// Defines a portrait only orientation for any device.
   static void setPortraitOrientation() {
-    unawaited(SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
-    ));
+    unawaited(
+      SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown],
+      ),
+    );
   }
+}
+
+/// Custom theme data for avatars
+class AvatarThemeData {
+  const AvatarThemeData({
+    required this.defaultBackgroundColors,
+    required this.textColor,
+    required this.size,
+    required this.fontSize,
+  });
+  final List<Color> defaultBackgroundColors;
+  final Color textColor;
+  final double size;
+  final double fontSize;
 }

@@ -52,6 +52,12 @@ abstract class AppColors {
 
   /// Red material color.
   static const MaterialColor red = Colors.red;
+   
+  // Avatar colors
+  static const Color avatarBackground1 = Color(0xFF3CED78); // Green for "ВВ" avatar
+  static const Color avatarBackground2 = Color(0xFFFF6347); // Red-orange for "СА" and "АЖ" avatars
+  static const Color avatarBackground3 = Color(0xFF1E90FF); // Blue for "ПЖ" avatar
+  static const Color avatarText = Colors.white;
 
   /// The primary Instagram gradient pallete.
   static const primaryGradient = <Color>[
