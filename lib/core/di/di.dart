@@ -11,6 +11,7 @@ import 'package:kasi_chat/features/auth/sign_up/cubit/sign_up_cubit.dart';
 import 'package:kasi_chat/features/chat/data/repositories/chat_repository_impl.dart';
 import 'package:kasi_chat/features/chat/domain/repositories/chat_repository.dart';
 import 'package:kasi_chat/features/chat/domain/usecase/domain.dart';
+import 'package:kasi_chat/features/chat_list/bloc/chat_list_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final GetIt sl = GetIt.instance;
@@ -71,5 +72,17 @@ Future<void> initDI() async {
     )
     ..registerLazySingleton<ForgotPasswordCubit>(
       () => ForgotPasswordCubit(resetPasswordUseCase: sl()),
+    )
+    ..registerLazySingleton<ChatListBloc>(
+      () => ChatListBloc(
+        getChatsUseCase: sl(),
+        watchChatsUseCase: sl(),
+        getUserByIdUseCase: sl(),
+        getChatUserIdsUseCase: sl(),
+        syncChatsUseCase: sl(),
+        getCurrentUserUseCase: sl(),
+      ),
     );
+
+  ;
 }
