@@ -5,7 +5,7 @@ import 'package:kasi_chat/core/config/config.dart';
 import 'package:kasi_chat/core/core.dart';
 import 'package:kasi_chat/core/data/datasources/remote_data_source.dart';
 import 'package:kasi_chat/core/domain/entities/entities.dart';
-import 'package:kasi_chat/features/chat/domain/repositories/chat_repository.dart';
+import 'package:kasi_chat/core/domain/repositories/chat_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase_flutter;
 
 /// Concrete implementation of ChatRepository coordinating Remote

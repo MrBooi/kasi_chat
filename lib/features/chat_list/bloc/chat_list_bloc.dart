@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:kasi_chat/core/domain/entities/entities.dart';
+import 'package:kasi_chat/core/domain/usecase/chat_usecase/chat_usecases.dart';
 import 'package:kasi_chat/core/domain/usecase/get_current_user_usecase.dart';
-import 'package:kasi_chat/features/chat/domain/usecase/domain.dart';
 
 part 'chat_list_event.dart';
 part 'chat_list_state.dart';

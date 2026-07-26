@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:kasi_chat/features/chat/domain/usecase/domain.dart';
+import 'package:kasi_chat/core/domain/usecase/chat_usecase/chat_usecases.dart';
 
 part 'delete_chat_state.dart';
 

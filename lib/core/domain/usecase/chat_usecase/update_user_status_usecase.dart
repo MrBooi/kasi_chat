@@ -1,4 +1,4 @@
-import 'package:kasi_chat/features/chat/domain/repositories/chat_repository.dart';
+import 'package:kasi_chat/core/domain/repositories/chat_repository.dart';
 
 class UpdateUserStatusUseCase {
   UpdateUserStatusUseCase(this._repository);
