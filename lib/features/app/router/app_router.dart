@@ -5,6 +5,7 @@ import 'package:kasi_chat/features/app/bloc/app_bloc.dart';
 import 'package:kasi_chat/features/app/router/go_router_refresh_stream.dart';
 import 'package:kasi_chat/features/app/router/router.dart';
 import 'package:kasi_chat/features/auth/view/auth_view.dart';
+import 'package:kasi_chat/features/chat_list/chat_list.dart';
 import 'package:kasi_chat/features/splash/splash.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -37,9 +38,7 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.chatList.route,
         // name: AppRoutes.chatList.name,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Chat List Page')),
-        ),
+        builder: (context, state) => const ChatListView(),
       ),
       GoRoute(
         path: AppRoutes.chat.path!,
@@ -65,8 +64,8 @@ class AppRouter {
       final authenticating = state.matchedLocation == AppRoutes.auth.route;
       final isInChatList = state.matchedLocation == AppRoutes.chatList.route;
 
-      if (isInChatList && !authenticated) return AppRoutes.auth.route;
-      if (!authenticated) return AppRoutes.auth.route;
+      if (isInChatList && !authenticated)         return AppRoutes.auth.route;
+      if (!authenticated)         return AppRoutes.auth.route;
       if (authenticating && authenticated) return AppRoutes.chatList.route;
 
       return null;
