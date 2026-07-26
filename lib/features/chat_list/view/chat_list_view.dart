@@ -56,5 +56,3 @@ class _ChatListBody extends StatelessWidget {
     );
   }
 }
-
-// Create a chat
