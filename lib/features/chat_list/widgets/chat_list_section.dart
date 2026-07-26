@@ -5,6 +5,7 @@ import 'package:kasi_chat/core/core.dart';
 import 'package:kasi_chat/core/domain/entities/entities.dart';
 import 'package:kasi_chat/features/app/bloc/app_bloc.dart';
 import 'package:kasi_chat/features/chat_list/bloc/chat_list_bloc.dart';
+import 'package:kasi_chat/features/chat_list/bloc/delete_chat/delete_chat_cubit.dart';
 import 'package:kasi_chat/features/chat_list/widgets/chat_list_item.dart';
 import 'package:kasi_chat/l10n/string_hardcoded.dart';
 
@@ -14,22 +15,29 @@ class ChatListSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: BlocBuilder<ChatListBloc, ChatListState>(
-        builder: (context, state) {
-          if (state is ChatListLoadingState) {
-            return const Center(child: CircularProgressIndicator());
+      child: BlocListener<DeleteChatCubit, DeleteChatState>(
+        listener: (context, state) {
+          if (state.status.isSuccess) {
+            // TODO SHOW DELETE SNACK BAR
           }
-
-          if (state is ChatListLoadedState) {
-            return _ChatsListBody(state.chats);
-          }
-
-          if (state is ChatListErrorState) {
-            return _ChatListError(state.messsage);
-          }
-
-          return const SizedBox.shrink();
         },
+        child: BlocBuilder<ChatListBloc, ChatListState>(
+          builder: (context, state) {
+            if (state is ChatListLoadingState) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is ChatListLoadedState) {
+              return _ChatsListBody(state.chats);
+            }
+
+            if (state is ChatListErrorState) {
+              return _ChatListError(state.messsage);
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
       ),
     );
   }
@@ -58,7 +66,7 @@ class _ChatsListBody extends StatelessWidget {
               extra: {'otherUser': chat.$2.toJson()},
             ),
             onDismissed: (_) {
-              // TODO Link with Delete Chat bloc
+              context.read<DeleteChatCubit>().deleteChat(chat.$1.id);
             },
             currentUserId: appState.user.id,
           );
