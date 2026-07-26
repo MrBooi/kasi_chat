@@ -111,7 +111,7 @@ class AppTheme {
       );
 
   // Avatar theme
-  AvatarThemeData get avatarTheme => const AvatarThemeData(
+  static AvatarThemeData get avatarTheme => const AvatarThemeData(
     defaultBackgroundColors: [
       AppColors.avatarBackground1,
       AppColors.avatarBackground2,
@@ -181,19 +181,20 @@ class AppDarkTheme extends AppTheme {
           modalBackgroundColor: AppColors.background,
         ),
       );
+
+  static AvatarThemeData get avatarTheme => const AvatarThemeData(
+    defaultBackgroundColors: [
+      AppColors.avatarBackground1,
+      AppColors.avatarBackground2,
+      AppColors.avatarBackground3,
+    ],
+    textColor: AppColors.avatarText,
+    size: 48,
+    fontSize: 20,
+  );
 }
 
 // Avatar theme
-AvatarThemeData get avatarTheme => const AvatarThemeData(
-  defaultBackgroundColors: [
-    AppColors.avatarBackground1,
-    AppColors.avatarBackground2,
-    AppColors.avatarBackground3,
-  ],
-  textColor: AppColors.avatarText,
-  size: 48,
-  fontSize: 20,
-);
 
 /// Theme for the [SystemUiOverlayStyle]
 class SystemUiOverlayTheme {
