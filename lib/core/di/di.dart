@@ -10,7 +10,7 @@ import 'package:kasi_chat/features/app/bloc/app_bloc.dart';
 import 'package:kasi_chat/features/auth/forgot_password/cubit/forgot_password_cubit.dart';
 import 'package:kasi_chat/features/auth/login/cubit/login_cubit.dart';
 import 'package:kasi_chat/features/auth/sign_up/cubit/sign_up_cubit.dart';
-import 'package:kasi_chat/features/chat/data/repositories/chat_repository_impl.dart';
+import 'package:kasi_chat/core/data/repositories/chat_repository_impl.dart';
 import 'package:kasi_chat/features/chat_list/bloc/chat_list_bloc.dart';
 import 'package:kasi_chat/features/chat_list/bloc/create_chat/create_chat_cubit.dart';
 import 'package:kasi_chat/features/chat_list/bloc/delete_chat/delete_chat_cubit.dart';
