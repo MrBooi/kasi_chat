@@ -12,6 +12,7 @@ import 'package:kasi_chat/features/chat/data/repositories/chat_repository_impl.d
 import 'package:kasi_chat/features/chat/domain/repositories/chat_repository.dart';
 import 'package:kasi_chat/features/chat/domain/usecase/domain.dart';
 import 'package:kasi_chat/features/chat_list/bloc/chat_list_bloc.dart';
+import 'package:kasi_chat/features/chat_list/bloc/delete_chat/delete_chat_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final GetIt sl = GetIt.instance;
@@ -82,6 +83,9 @@ Future<void> initDI() async {
         syncChatsUseCase: sl(),
         getCurrentUserUseCase: sl(),
       ),
+    )
+    ..registerLazySingleton<DeleteChatCubit>(
+      () => DeleteChatCubit(deleteChatUseCase: sl()),
     );
 
   ;
